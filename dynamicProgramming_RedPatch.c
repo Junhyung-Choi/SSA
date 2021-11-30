@@ -13,18 +13,40 @@
 #define White 6
 #define Brown 7
 
-int nMotorSpeedSetting=35, vertex=0, count =0, row=0, val, r, c;
+int nMotorSpeedSetting=35, vertex=0, count =0, row=0, val, r, c, c_suc=100;
 int S[6][6], dt[6][6];
+
+float c_timer;
+
+int getAccurateColor(int sensor_num) {
+	while(1)
+	{
+		int color = -1, tmp_color = -1;
+		if (sensor_num == 1) color = getColorName(c1);
+		else if (sensor_num == 2) color = getColorName(c2);
+		else if (sensor_num == 3) color = getColorName(c3);
+		clearTimer(T1);
+		while(1)
+		{
+			if (sensor_num == 1) tmp_color = getColorName(c1);
+			else if (sensor_num == 2) tmp_color = getColorName(c2);
+			else if (sensor_num == 3) tmp_color = getColorName(c3);
+			if (color != tmp_color) break;
+			c_timer = time1[T1];
+			if(c_timer>c_suc) return color;
+		}
+	}
+}
 
 void go()
 {
 	val = 7;
-	if(getColorName(c2) == Red) {
+	if(getAccurateColor(2) == Red) {
 		if(row % 2 == 0) S[row][count] = 1;
 		else S[row][4 - count] = 1;
 		playTone(440, 20); sleep(100);
 	}
-	if(getColorName(c2) == Yellow)
+	if(getAccurateColor(2) == Yellow)
 	{
 		setMotorSpeed(lm, nMotorSpeedSetting - val);
 		setMotorSpeed(rm, nMotorSpeedSetting + val);
@@ -35,11 +57,11 @@ void go()
 	}
 
 	if(row % 2 == 1 || row == 4){
-		if(getColorName(c1) == Yellow) vertex++;
+		if(getAccurateColor(1) == Yellow) vertex++;
 		else vertex = 0;
 	}
 	else {
-		if(getColorName(c3) == Yellow) vertex++;
+		if(getAccurateColor(3) == Yellow) vertex++;
 		else vertex = 0;
 	}
 
@@ -51,13 +73,13 @@ void turnLeft()
 	setMotorSpeed(rm,40);
 	sleep(150);
 
-	while(getColorName(c1) > Yellow){
+	while(getAccurateColor(1) > Yellow){
 		setMotorSpeed(lm, -nMotorSpeedSetting * 6/10);
 		setMotorSpeed(rm, nMotorSpeedSetting * 6/10);
 		sleep(20);
 	}
 
-	while(getColorName(c2) > Yellow){
+	while(getAccurateColor(2) > Yellow){
 		setMotorSpeed(lm,-nMotorSpeedSetting * 6/10);
 		setMotorSpeed(rm,nMotorSpeedSetting * 6/10);
 		sleep(20);
@@ -74,13 +96,13 @@ void turnRight(){
 	setMotorSpeed(rm,40);
 	sleep(100);
 
-	while(getColorName(c3) > Yellow){
+	while(getAccurateColor(3) > Yellow){
 		setMotorSpeed(lm, nMotorSpeedSetting * 6/10);
 		setMotorSpeed(rm, -nMotorSpeedSetting * 6/10);
 		sleep(20);
 	}
 
-	while(getColorName(c2) > Yellow){
+	while(getAccurateColor(2) > Yellow){
 		setMotorSpeed(lm, nMotorSpeedSetting * 6/10);
 		setMotorSpeed(rm, -nMotorSpeedSetting * 6/10);
 		sleep(20);
@@ -107,7 +129,7 @@ void completeSearch() {
 				setMotorSpeed(lm, 40);
 				setMotorSpeed(rm, 35	);
 				for(int i = 0; i < 4; i++) {
-					if(getColorName(c2) == Red) {
+					if(getAccurateColor(2) == Red) {
 						if(row % 2 == 0) S[row][count] = 1;
 						else S[row][4 - count] = 1;
 						playTone(440, 20);
@@ -119,7 +141,7 @@ void completeSearch() {
 			}
 			else {
 				for(int i = 0; i < 3; i++) {
-					if(getColorName(c2) == Red) {
+					if(getAccurateColor(2) == Red) {
 						if(row % 2 == 0) S[row][count] = 1;
 						else S[row][count] = 1;
 						playTone(440, 20);
@@ -130,14 +152,14 @@ void completeSearch() {
 				turnLeft();
 			}
 			if(row % 2 == 0) {
-				while(getColorName(c3) == White) go();
+				while(getAccurateColor(3) == White) go();
 				setMotorSpeed(lm, 35);
 				setMotorSpeed(rm, 30);
 				sleep(400);
 				turnRight();
 			}
 			else {
-				while(getColorName(c1) == White) go();
+				while(getAccurateColor(1) == White) go();
 				setMotorSpeed(lm, 30);
 				setMotorSpeed(rm, 35);
 				sleep(400);
@@ -191,6 +213,8 @@ task main(){
 	while(getButtonPress(1)==0) sleep(10);
 
 	completeSearch();
+
+
 	setMotorSpeed(lm, 20);
 	setMotorSpeed(rm, -20);
 	sleep(1000);
