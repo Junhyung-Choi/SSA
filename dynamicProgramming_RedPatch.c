@@ -44,7 +44,7 @@ void go()
    }
 
    if(row % 2 == 1 || row == 4){
-      if(getColorName(c1) == Yellow) {
+      if(getColorName(c1) == Yellow || getColorName(c3) == Yellow) {
          setMotorSpeed(lm, 10);
          setMotorSpeed(rm, 10);
          sleep(200);
@@ -97,14 +97,14 @@ void turnLeft()
    sleep(150);
 
    while(getColorName(c1) > Yellow){
-      setMotorSpeed(lm, -nMotorSpeedSetting * 6/10);
-      setMotorSpeed(rm, nMotorSpeedSetting * 6/10);
+      setMotorSpeed(lm, -nMotorSpeedSetting * 6/11);
+      setMotorSpeed(rm, nMotorSpeedSetting * 6/11);
       sleep(20);
    }
 
    while(getColorName(c2) > Yellow){
-      setMotorSpeed(lm,-nMotorSpeedSetting * 6/10);
-      setMotorSpeed(rm,nMotorSpeedSetting * 6/10);
+      setMotorSpeed(lm,-nMotorSpeedSetting * 6/11);
+      setMotorSpeed(rm,nMotorSpeedSetting * 6/11);
       sleep(20);
    }
 
@@ -117,21 +117,21 @@ void turnLeft()
 void turnRight(){
    setMotorSpeed(lm,20);
    setMotorSpeed(rm,20);
-   sleep(100);
+   sleep(150);
 
    while(getColorName(c3) > Yellow){
-      setMotorSpeed(lm, nMotorSpeedSetting * 6/10);
-      setMotorSpeed(rm, -nMotorSpeedSetting * 6/10);
+      setMotorSpeed(lm, nMotorSpeedSetting * 6/11);
+      setMotorSpeed(rm, -nMotorSpeedSetting * 6/11);
       sleep(20);
    }
 
    while(getColorName(c2) > Yellow){
-      setMotorSpeed(lm, nMotorSpeedSetting * 6/10);
-      setMotorSpeed(rm, -nMotorSpeedSetting * 6/10);
+      setMotorSpeed(lm, nMotorSpeedSetting * 6/11);
+      setMotorSpeed(rm, -nMotorSpeedSetting * 6/11);
       sleep(20);
    }
 
-   sleep(50);
+   sleep(150);
    setMotorSpeed(lm,0);
    setMotorSpeed(rm,0);
    sleep(100);
@@ -202,7 +202,7 @@ void goUp() {
    r--; row++;
    displayBigTextLine(1, "%d", r);
    turnRight();
-   /*count = 0;
+   count = 0;
 
    while(true) {
       go();
@@ -211,12 +211,7 @@ void goUp() {
          turnLeft();
          break;
       }
-   }*/
-   while(getColorName(c1) == White || getColorName(c3) == White) {
-     go();
    }
-   sleep(300);
-   turnLeft();
 }
 
 void goLeft() {
@@ -226,9 +221,9 @@ void goLeft() {
    while(true) {
       go();
       if(count == 1) {
-         setMotorSpeed(lm, 30);
-         setMotorSpeed(rm, 30);
-         sleep(400);
+         setMotorSpeed(lm, 10);
+         setMotorSpeed(rm, 10);
+         sleep(500);
          break;
       }
    }
@@ -248,32 +243,12 @@ task main(){
    setMotorSpeed(rm, 10);
    sleep(500);
    
-   playTone(420, 20);
-   sleep(50);
-   
    stopMotor();
    sleep(1000);
 
    
    playTone(420, 20);
    sleep(50);
-   
-/*   while(getColorName(c2) == White) {
-     setMotorSpeed(lm, 10);
-     setMotorSpeed(rm, -10);
-     sleep(20);
-   }
-   sleep(500);
-   */
-   
-   stopMotor();
-   sleep(1000);
-   
-   playSound(soundBeepBeep);
-   sleep(1000);
-   
-   stopMotor();
-   sleep(1000);
 
    count = row = 0;
 
@@ -289,6 +264,17 @@ task main(){
 
 
    row = 0; r = 4; c = 4;
+   
+   while(getColorName(c2) == White) {
+     setMotorSpeed(lm, 10);
+     setMotorSpeed(rm, -10);
+     sleep(50);
+   }
+   sleep(250);
+   stopMotor();
+   sleep(500);
+   
+   goLeft();
 
    while(r != 0 || c != 0) {
       if(r == 0) goLeft();

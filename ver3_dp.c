@@ -301,8 +301,7 @@ task main()
 {
    while(getButtonPress(1)==0) sleep(10);
    completeSearch();
-   showMatrix();
-   
+
    playTone(420, 20); sleep(50);
 
    setMotorSpeed(lm, 10);
@@ -329,25 +328,61 @@ task main()
    sleep(1000);
 
    count = row = 0;
-   for(int i = 0; i < 5; i++) {
-      for(int j = 0; j < 5; j++) {
-         if(i == 0 && j == 0) dt[i][j] = S[i][j];
-         else if(i == 0) dt[i][j] = dt[i][j-1] + S[i][j];
-         else if(j == 0) dt[i][j] = dt[i-1][j] + S[i][j];
-         else dt[i][j] = max(dt[i-1][j], dt[i][j-1]) + S[i][j];
-      }
-   }
-
+   for(f=4; f>=0; f--)
+		for(e=4; e>=0; e--)
+      {
+			if( e==4 && f==4) dt[e][f] = S[e][f];
+			else if(f == 4) dt[e][f] = dt[e+1][f] + S[e][f];
+			else
+			{
+				dt[e][f] = -10;
+				for(i=0; i<=4; i++)
+            {
+					d[i] = dt[i][f+1];
+					if(i > e)
+               {
+						for(j=i; j>=e; j--)
+						   d[i] += S[j][f];
+					}
+					else if(i == e)
+               {
+						d[i] += S[i][f];
+					}
+					else
+               {
+						for(j=i; i<=e; j++)
+						   d[i]+=S[j][f];
+					}
+					if(dt[e][f]<d[i])
+               {
+						dt[e][f] = d[i];
+						J[e][f] = i;
+					}
+				}
+			}
+		}
    row = 0; r = c = 4;
-
-   while(r != 0 || c != 0) {
-      displayBigTextLine(1, "%d %d(%d)", r, c, row);
-      if(r == 0) goLeft();
-      else if(c == 0) goUp();
-      else if(dt[r-1][c] > dt[r][c-1]) goUp();
-      else goLeft();
-      eraseDisplay();
-      displayBigTextLine(1, "%d %d(%d)", r, c, row);
+   d[0]=0;
+   for(i=0; i<=4; i++)
+   {
+      d[i+1] = J[d[i]][i];
+   }
+   for(i=4; i>0; i--)
+   {
+      if(r > d[i])
+      {
+         while(r > d[i]) goUp();
+         goLeft();
+      }
+      else if(r == d[i])
+      {
+         goLeft();
+      }
+      else
+      {
+         while(r < d[i]) goDown();
+         goLeft();
+      }
    }
 
    playTone(240, 20); sleep(200);
