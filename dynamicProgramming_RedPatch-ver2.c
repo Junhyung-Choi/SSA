@@ -57,7 +57,7 @@ void go()
          setMotorSpeed(rm, 10);
          sleep(200);
             }
-         vertex++;
+            vertex++;
          }
       else {
          vertex = 0;
@@ -77,9 +77,9 @@ void go()
          setMotorSpeed(lm, 10);
          setMotorSpeed(rm, 10);
          sleep(0);
-          }
-          vertex++;
-            
+            }
+            vertex++;
+
          }
       else {
          vertex = 0;
@@ -92,8 +92,8 @@ void go()
 
 void turnLeft()
 {
-   setMotorSpeed(lm,20);
-   setMotorSpeed(rm,20);
+   setMotorSpeed(lm,40);
+   setMotorSpeed(rm,40);
    sleep(150);
 
    while(getColorName(c1) > Yellow){
@@ -115,8 +115,8 @@ void turnLeft()
 }
 
 void turnRight(){
-   setMotorSpeed(lm,20);
-   setMotorSpeed(rm,20);
+   setMotorSpeed(lm,40);
+   setMotorSpeed(rm,40);
    sleep(100);
 
    while(getColorName(c3) > Yellow){
@@ -186,8 +186,8 @@ void completeSearch() {
          row++;
          count = 0;
          while(getColorName(c1) == White && getColorName(c3) == White) {
-            setMotorSpeed(lm, -10);
-            setMotorSpeed(rm, -10);
+            setMotorSpeed(lm, -20);
+            setMotorSpeed(rm, -20);
         }
          sleep(410);
       }
@@ -200,9 +200,8 @@ int max(int a, int b) {
 
 void goUp() {
    r--; row++;
-   displayBigTextLine(1, "%d", r);
    turnRight();
-   /*count = 0;
+   count = 0;
 
    while(true) {
       go();
@@ -211,17 +210,11 @@ void goUp() {
          turnLeft();
          break;
       }
-   }*/
-   while(getColorName(c1) == White || getColorName(c3) == White) {
-     go();
    }
-   sleep(300);
-   turnLeft();
 }
 
 void goLeft() {
    c--;
-   displayBigTextLine(4, "%d", c);
    count = 0;
    while(true) {
       go();
@@ -240,40 +233,14 @@ task main(){
    while(getButtonPress(1)==0) sleep(10);
 
    completeSearch();
-   
-   playTone(420, 20);
-   sleep(50);
-   
-   setMotorSpeed(lm, 10);
-   setMotorSpeed(rm, 10);
-   sleep(500);
-   
-   playTone(420, 20);
-   sleep(50);
-   
-   stopMotor();
-   sleep(1000);
 
-   
-   playTone(420, 20);
-   sleep(50);
-   
-/*   while(getColorName(c2) == White) {
-     setMotorSpeed(lm, 10);
-     setMotorSpeed(rm, -10);
-     sleep(20);
-   }
-   sleep(500);
-   */
-   
-   stopMotor();
+
+   setMotorSpeed(lm, 20);
+   setMotorSpeed(rm, -20);
    sleep(1000);
-   
-   playSound(soundBeepBeep);
-   sleep(1000);
-   
-   stopMotor();
-   sleep(1000);
+   setMotorSpeed(lm, -20);
+   setMotorSpeed(rm, 20);
+   sleep(1650);
 
    count = row = 0;
 
@@ -282,13 +249,24 @@ task main(){
          if(i == 0 && j == 0) dt[i][j] = S[i][j];
          else if(i == 0) dt[i][j] = dt[i][j-1] + S[i][j];
          else if(j == 0) dt[i][j] = dt[i-1][j] + S[i][j];
-         else dt[i][j] = max(dt[i-1][j], dt[i][j-1]) + S[i][j];
+         else dt[i][j] = max(dt[i-1][j], dt[i][j-1] + S[i][j]);
       }
    }
-   
 
+   int x = 0;
+   int y = 100;
 
-   row = 0; r = 4; c = 4;
+   for(int i = 0; i < 5; i++) {
+      y = y - 10;
+      x = 0;
+
+      for(int j = 0; j < 5; j++) {
+         displayStringAt(x, y, "%d[%d]", S[i][j], dt[i][j]);
+         x = x + 25;
+      }
+   }
+
+   row = 0; r = c = 4;
 
    while(r != 0 || c != 0) {
       if(r == 0) goLeft();

@@ -1,8 +1,8 @@
 #pragma config(Sensor,S1,c1,sensorEV3_Color,modeEV3Color_Color)
-#pragma config(Sensor,S2,c1,sensorEV3_Color,modeEV3Color_Color)
-#pragma config(Sensor,S3,c1,sensorEV3_Color,modeEV3Color_Color)
+#pragma config(Sensor,S2,c2,sensorEV3_Color,modeEV3Color_Color)
+#pragma config(Sensor,S3,c3,sensorEV3_Color,modeEV3Color_Color)
 #pragma config(Motor,motorB,lm,tmotorEV3_Large,PIDControl,encoder)
-#pragma config(Motor,motorC,rm,tmotorEV3_Large,PIDContorl,encoder)
+#pragma config(Motor,motorC,rm,tmotorEV3_Large,PIDControl,encoder)
 
 #define DIFF 10
 
@@ -21,19 +21,19 @@ void go()
 	else if(getColorName(c2)==2){
 		if(row%2==0)S[row][count]=-1;
 		else S[row][4-count]=-1;
-		playTone(400,20); 
+		playTone(400,20);
 		sleep(100);
 	}
-	if(getColorName(c2)==4 //4:yellow
+	if(getColorName(c2)==4) //4:yellow
 	{
 		setMotorSpeed(lm,nMotorSpeedSetting-val);
 		setMotorSpeed(rm,nMotorSpeedSetting+val);
-		
+
 	}
 	else{
 		setMotorSpeed(lm,nMotorSpeedSetting-val);
 		setMotorSpeed(rm,nMotorSpeedSetting+val);
-		
+
 	}
 		if(getColorName(c1)==4 || getColorName(c3)==4)
 		vertex++;
@@ -198,12 +198,12 @@ task main(){
 	setMotorSpeed(lm,20);
 	setMotorSpeed(rm,-20);
 	sleep(1650);
-	
+
 	count=row=0;
 	for(f=4; f>=0; f--)
 		for(e=4; e>=0; e--){
 			if(e==4 &&f==4) dt[e][f]=S[e][f];
-			else if(f==4) dt[e+1][f]+S[e][f];
+			else if(f==4) dt[e][f]=dt[e+1][f]+S[e][f];
 			else
 			{
 				dt[e][f]=-10;
@@ -235,7 +235,7 @@ task main(){
 		for(i=4; i>0; i--){
 			if(r>d[i])
 			{
-				while(r>d[i]) goUP();
+				while(r>d[i]) goUp();
 				goLeft();
 			}
 			else if(r==d[i])
