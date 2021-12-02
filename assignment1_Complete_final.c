@@ -13,7 +13,7 @@
 #define White 6
 #define Brown 7
 
-int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, search_init = 0, matrix_max = 5;
+int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, max_matrix = 5, search_init = 0, count_movingPoint = 0, back_row = 4, back_count = 4;
 int S[6][6], dt[6][6];
 
 void showMatrix()
@@ -24,57 +24,62 @@ void showMatrix()
         displayBigTextLine(3 + i*2,"%d %d %d %d %d",S[i][0],S[i][1],S[i][2],S[i][3],S[i][4]);
     }
 }
-
 void finalShowMatrix()
 {
    // case 5x4
-   if (max_row == 4)
+   if (max_row == 3)
    {
       char pS[4][5] = {
-         {"+","+","+","+","+"},
-         {"+","+","+","+","+"},
-         {"+","+","+","+","+"},
-         {"+","+","+","+","+"},
+         {'+','+','+','+','+'},
+         {'+','+','+','+','+'},
+         {'+','+','+','+','+'},
+         {'+','+','+','+','+'}
       };
       for (int i = 0; i < 4; i++)
       {
          for (int j =0; j<5; j++)
          {
             if(S[i][j] == 1)
-               pS[i][j] = "O";
+               pS[i][j] = 'O';
             else if (S[i][j] == -1)
-               pS[i][j] = "X";
+               pS[i][j] = 'X';
          }
       }
       eraseDisplay();
       for(int i=0;i<4;i++)
       {
-         displayBigTextLine(2*i-1,"%c %c %c %c %c",pS[i][0],pS[i][1],pS[i][2],pS[i][3],pS[i][4]);
+         displayBigTextLine(2*i+1,"%c %c %c %c %c",pS[i][0],pS[i][1],pS[i][2],pS[i][3],pS[i][4]);
       }
    } else {
       char pS[5][4] = {
-         {"+","+","+","+"},
-         {"+","+","+","+"},
-         {"+","+","+","+"},
-         {"+","+","+","+"},
-         {"+","+","+","+"}
+         {'+','+','+','+'},
+         {'+','+','+','+'},
+         {'+','+','+','+'},
+         {'+','+','+','+'},
+         {'+','+','+','+'}
       };
       for (int i = 0; i < 5; i++)
       {
          for (int j =0; j < 4; j++)
          {
             if(S[i][j] == 1)
-               pS[i][j] = "O";
+               pS[i][j] = 'O';
             else if (S[i][j] == -1)
-               pS[i][j] = "X";
+               pS[i][j] = 'X';
          }
       }
       eraseDisplay();
       for(int i=0;i<5;i++)
       {
-         displayBigTextLine(2*i-1,"%c %c %c %c",S[i][0],S[i][1],S[i][2],S[i][3]);
+         displayBigTextLine(2*i+1,"%c %c %c %c",pS[i][0],pS[i][1],pS[i][2],pS[i][3]);
       }
    }
+}
+
+void showScore(){
+	eraseDisplay();
+	if(max_row == 3) 	displayBigTextLine(1,"Score: %d",dt[3][4]);
+	else displayBigTextLine(1,"Score: %d",dt[4][3]);
 }
 
 void stopMotor(){
@@ -101,9 +106,9 @@ void go()
         	setMotorSpeed(rm, 10);
         	sleep(200);
         	if(getColorName(c2) == Red) {
-        		if(count == 5) S[row][0] = 1;
+        		if(count == max_count) S[row][0] = 1;
         		if(row % 2 == 0) S[row][count] = 1;
-         		else S[row][4 - count] = 1;
+         		else S[row][(max_count - 1) - count] = 1;
 	        	showMatrix();
 	        	playTone(440, 20); sleep(100);
 	        	setMotorSpeed(lm, 10);
@@ -112,7 +117,7 @@ void go()
 	        }
 	        if(getColorName(c2) == Blue) {
         		if(row % 2 == 0) S[row][count] = -1;
-         		else S[row][4 - count] = -1;
+         		else S[row][(max_count - 1) - count] = -1;
 	        	showMatrix();
 	        	playTone(440, 20); sleep(100);
 	        	setMotorSpeed(lm, 10);
@@ -134,16 +139,16 @@ void go()
         	sleep(200);
         	if(getColorName(c2) == Red){
          		if(row % 2 == 0) S[row][count] = 1;
-         		else S[row][4 - count] = 1;
+         		else S[row][(max_count - 1) - count] = 1;
          	showMatrix();
          	playTone(440, 20); sleep(100);
          	setMotorSpeed(lm, 10);
          	setMotorSpeed(rm, 10);
          	sleep(200);
             }
-            if(getColorName(c2) == Blue) {
+           else if(getColorName(c2) == Blue) {
         		if(row % 2 == 0) S[row][count] = -1;
-         		else S[row][4 - count] = -1;
+         		else S[row][(max_count - 1) - count] = -1;
 	        	showMatrix();
 	        	playTone(440, 20); sleep(100);
 	        	setMotorSpeed(lm, 10);
@@ -158,25 +163,6 @@ void go()
         }
     }
 	if(vertex == 1) count++;
-	
-	if(count == 4 && row == 0 && search_init == 0) {
-		setMotorSpeed(lm, 20);
-		setMotorSpeed(rm, 15);
-		sleep(200);
-		stopMotor();
-		sleep(200);
-		if(getColorName(c2) == White) {
-			max_row = 4;
-			max_count = 4;
-			matrix_max = 5;
-		}
-		else {
-			max_row = 3;
-			max_count = 5;
-			matrix_max = 4;
-		}
-		search_init++;
-	}
 }
 
 void turnLeft()
@@ -230,6 +216,29 @@ void completeSearch() {
    while(true) {
       go();
 
+      if(search_init == 0 && count == 4 && row == 0) {
+				setMotorSpeed(lm, 20);
+				setMotorSpeed(rm, 15);
+				sleep(300);
+				stopMotor();
+				sleep(200);
+				if(getColorName(c2) == White) {
+					max_row = 4;
+					max_count = 4;
+					max_matrix = 4;
+					back_row = 4;
+					back_count = 3;
+				}
+				else {
+					max_row = 3;
+					max_count = 5;
+					max_matrix = 5;
+					back_row = 3;
+					back_count = 4;
+				}
+				search_init++;
+			}
+
       if(count == max_count) {
          if(row == max_row) return;
          if(row % 2 == 0) {
@@ -238,7 +247,7 @@ void completeSearch() {
             for(int i = 0; i < 4; i++) {
                if(getColorName(c2) == Red) {
                   if(row % 2 == 0) S[row][count] = 1;
-                  else S[row][4 - count] = 1;
+                  else S[row][max_count - count] = 1;
                   playTone(440, 20);
                   setMotorSpeed(lm, 10);
 	        				setMotorSpeed(rm, 10);
@@ -252,7 +261,7 @@ void completeSearch() {
             for(int i = 0; i < 3; i++) {
                if(getColorName(c2) == Red) {
                   if(row % 2 == 0) S[row][count] = 1;
-                  else S[row][count] = 1;
+                  else S[row][(max_count - 1) - count] = 1;
                   playTone(440, 20);
                   setMotorSpeed(lm, 10);
 	        				setMotorSpeed(rm, 10);
@@ -285,7 +294,7 @@ void completeSearch() {
          setMotorSpeed(lm,-10);
          setMotorSpeed(rm,-10);
          sleep(300);
-         
+
          stopMotor();
          sleep(500);
       }
@@ -327,17 +336,71 @@ void goLeft() {
    }
 }
 
+void go_MovingPoint() {
+	while(count_movingPoint < 4) {
+		 val = 7;
+	   if(getColorName(c2) == Yellow)
+	   {
+	      setMotorSpeed(lm, nMotorSpeedSetting - val);
+	      setMotorSpeed(rm, nMotorSpeedSetting + val);
+	   }
+	   else {
+	      setMotorSpeed(lm, nMotorSpeedSetting + val);
+	      setMotorSpeed(rm, nMotorSpeedSetting - val);
+	   }
+
+	   if(getColorName(c1) == Yellow) {
+	    setMotorSpeed(lm, 10);
+	    setMotorSpeed(rm, 10);
+	    vertex++;
+	   }
+	   else
+	   {
+	     vertex=0;
+	   }
+
+	   if (vertex == 1)
+	   {
+	     count_movingPoint++;
+	   }
+	 }
+	 stopMotor();
+	 sleep(100);
+}
+
 task main(){
    while(getButtonPress(1)==0) sleep(10);
 
    completeSearch();
+
+   stopMotor();
+   sleep(2000);
+
+   finalShowMatrix();
+
+   if(max_row == 3) {
+    setMotorSpeed(lm, 10);
+   	setMotorSpeed(rm, 10);
+   	sleep(500);
+
+   	while(getColorName(c2) == White) {
+    	setMotorSpeed(lm, -10);
+     	setMotorSpeed(rm, 10);
+     	sleep(20);
+   	}
+   	sleep(100);
+
+   	go_MovingPoint();
+   }
+
+
 
    playTone(420, 20);
    sleep(50);
 
    setMotorSpeed(lm, 10);
    setMotorSpeed(rm, 10);
-   sleep(500);
+   sleep(1000);
 
    playTone(420, 20);
    sleep(50);
@@ -375,34 +438,42 @@ task main(){
 
    count = row = 0;
 
-   for(int i = 0; i < maxrix_max; i++) {
-      for(int j = 0; j < matrix_max; j++) {
+   //matrix_max -> 5
+   for(int i = 0; i < 5; i++) {
+      for(int j = 0; j < 5; j++) {
          if(i == 0 && j == 0) dt[i][j] = S[i][j];
          else if(i == 0) dt[i][j] = dt[i][j-1] + S[i][j];
          else if(j == 0) dt[i][j] = dt[i-1][j] + S[i][j];
          else dt[i][j] = max(dt[i-1][j], dt[i][j-1]) + S[i][j];
       }
    }
-   row = 0; r = c = matrix_max - 1;
+   row = 0; r = back_row; c = back_count;
 
-   while(r != 0 || c != 0) {
-      if(r == 0) goLeft();
-      else if(c == 0) goUp();
-      else if(dt[r-1][c] > dt[r][c-1]) {
-      	playTone(440, 20);
-      	sleep(80);
-      	goUp();
-      }
-      else {
-      	playTone(440, 20);
-      	sleep(80);
-      	goLeft();
-      }
-      eraseDisplay();
-      displayBigTextLine(1, "%d %d(%d)", r, c, row);
-   }
+	 while(r != 0 || c != 0) {
+	    if(r == 0) goLeft();
+	    else if(c == 0) goUp();
+	    else if(dt[r-1][c] > dt[r][c-1]) {
+	    	playTone(440, 20);
+	      sleep(80);
+	      goUp();
+	    }
+	    else {
+	      playTone(440, 20);
+	      sleep(80);
+	      goLeft();
+	    }
+	    eraseDisplay();
+	    //displayBigTextLine(1, "%d %d(%d)", r, c, row);
+	 		showScore();
+	 }
 
    playTone(240, 20); sleep(100);
    stopMotor();
    while(getButtonPress(1) == 0) sleep(10);
 }
+//Delete
+
+/*if(row == 3){
+	row = 4;
+	while(count != 4)go();
+}*/
