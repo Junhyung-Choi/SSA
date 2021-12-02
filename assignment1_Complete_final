@@ -13,7 +13,7 @@
 #define White 6
 #define Brown 7
 
-int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, search_init = 0;
+int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, search_init = 0, matrix_max = 5;
 int S[6][6], dt[6][6];
 
 void showMatrix()
@@ -116,10 +116,12 @@ void go()
 		if(getColorName(c2) == White) {
 			max_row = 4;
 			max_count = 4;
+			matrix_max = 5;
 		}
 		else {
 			max_row = 3;
 			max_count = 5;
+			matrix_max = 4;
 		}
 		search_init++;
 	}
@@ -321,15 +323,15 @@ task main(){
 
    count = row = 0;
 
-   for(int i = 0; i < 5; i++) {
-      for(int j = 0; j < 5; j++) {
+   for(int i = 0; i < maxrix_max; i++) {
+      for(int j = 0; j < matrix_max; j++) {
          if(i == 0 && j == 0) dt[i][j] = S[i][j];
          else if(i == 0) dt[i][j] = dt[i][j-1] + S[i][j];
          else if(j == 0) dt[i][j] = dt[i-1][j] + S[i][j];
          else dt[i][j] = max(dt[i-1][j], dt[i][j-1]) + S[i][j];
       }
    }
-   row = 0; r = c = 4;
+   row = 0; r = c = matrix_max - 1;
 
    while(r != 0 || c != 0) {
       if(r == 0) goLeft();
