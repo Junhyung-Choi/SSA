@@ -31,16 +31,18 @@ dp = [[INF] * 25 for _ in range(25)]
 
 visited = [False] * (25) 
 distance = [INF] * (25)
+parent = [-1] * (25)
+red_visited = [False] * 25
 
 def convert_graph(ga):
     for i in range(5):
         for j in range(5):
             if ga[i][j] == 1:
-                n_graph[i][j] = -4
-            elif ga[i][j] == -1:
-                n_graph[i][j] = 6
-            else:
                 n_graph[i][j] = 1
+            elif ga[i][j] == -1:
+                n_graph[i][j] = 11
+            else:
+                n_graph[i][j] = 6
 
 def showGraph(g):
     for i in range(len(g)):
@@ -52,13 +54,18 @@ def showGraph(g):
         print("")
         
 def floyd():
+    a  = [[0] * 25 for _ in range(25)]
     for k in range(25):
         for i in range(25):
             for j in range(25):
-                # print("i: ",i,"j: ",j, "dp: ",dp[i][j])
+                if (min(dp[i][j], dp[i][k] + dp[k][j]) != dp[i][j]):
+                    a[i][j] += 1
                 dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])
+    for i in range(25):
+        for j in range(25):
+            dp[i][j] -= a[i][j] * 5
 
-def initFloyd(g):
+def initDP(g):
     dx = [1,-1,0,0]
     dy = [0,0,1,-1]
     for start in range(25):
@@ -84,12 +91,13 @@ def get_smallest_node():
 
 # 다익스트라 알고리즘
 def dijkstra():
-    distance[0] = 0
-    visited[0] = True
+    distance[24] = 0
+    visited[24] = True
 
-    distance[1] = n_graph[0][1]
-    distance[5] = n_graph[1][0]
-
+    distance[19] = n_graph[3][4]
+    distance[23] = n_graph[4][3]
+    parent[19] = 24
+    parent[23] = 24
     # 시작노드 제외한 n-1개의 다른 노드들 처리
     for _ in range(24):
         now = get_smallest_node()  # 방문X 면서 시작노드와 최단거리인 노드 반환
@@ -106,17 +114,39 @@ def dijkstra():
                 cost = distance[now] + n_graph[nx][ny]  # 시작->now 거리 + now->now의 인접노드 거리
                 if cost < distance[nx * 5 + ny]:    # cost < 시작->now의 인접노드 다이렉트 거리
                     distance[nx * 5 + ny] = cost
-    print("Dijk: ",distance)
+                    parent[nx * 5 + ny] = now
+    print("\nDijk: ",distance)
+
+def printPath(start):
+    if parent[start] == -1:
+        print("[%d][%d]"%(start//5,start%5))
+        return
+    else:
+        print("[%d][%d]"%(start//5,start%5) + "-> ", end = " ")
+        printPath(parent[start])
+
+def findShortestRed(gr,start):
+    red_list = []
+    for i in range(5):
+        for j in range(5):
+            if gr[i][j] == 1:
+                red_list.append(i * 5 + j)
+    return min(red_list)
 
 showGraph(graph)
-convert_graph(graph1)
+convert_graph(graph)
 print("\n")
 showGraph(n_graph)
 print("\n")
-initFloyd(n_graph)
+initDP(n_graph)
 showGraph(dp)
 floyd()
 print("\n")
 showGraph(dp)
 
 dijkstra()
+
+print(parent)
+
+printPath(findShortestRed(graph, 24))
+printPath(0)
