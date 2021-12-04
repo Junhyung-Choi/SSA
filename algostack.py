@@ -78,7 +78,7 @@ def red_scan(g):
     for i in range(5):
         for j in range(5):
             if(g[i][j] == 1):
-                red_list[ctoy(i,j)] = 1
+                red_list[ctoi(i,j)] = 1
 
 def evalStack(stack):
     if (stack[0] == -1):
