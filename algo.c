@@ -120,7 +120,7 @@ int evalStack_tmp()
 
 void setPath(int x, int y, int value)
 {
-    printf("setPath\n");
+    // printf("setPath\n");
     int i = 0;
     initList(tmp_path,-1);
     // for(int i=0; i<5; i++)
@@ -134,18 +134,18 @@ void setPath(int x, int y, int value)
     //         printf("\n");
     //     }
     // }
-    printf("x: %d y:%d\n",x,y);
+    // printf("x: %d y:%d\n",x,y);
     for (;spMatrix[x][y][i] != -1; i++)
     {
-        printf("spMatrix[%d][%d][%d] : %d\n",x,y,i,spMatrix[x][y][i]);
+        // printf("spMatrix[%d][%d][%d] : %d\n",x,y,i,spMatrix[x][y][i]);
         tmp_path[i] = spMatrix[x][y][i];
     }
     tmp_path[i] = value;
-    for (int i = 0; i < 50; i++)
-    {
-        printf("%d ", tmp_path[i]);
-    }
-    printf("\n");
+    // for (int i = 0; i < 50; i++)
+    // {
+    //     printf("%d ", tmp_path[i]);
+    // }
+    // printf("\n");
 }
 
 void copyPath(int x, int y)
