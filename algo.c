@@ -62,7 +62,7 @@ int evalStack(int start_x, int start_y)
     int x,y;
     for(int i = 1; spMatrix[start_x][start_y][i] != -1; i++)
     {
-        score = -1;
+        score -= -1;
         itoc(spMatrix[start_x][start_y][i]);
         x=tmpx;
         y=tmpy;
@@ -123,17 +123,17 @@ void setPath(int x, int y, int value)
     printf("setPath\n");
     int i = 0;
     initList(tmp_path,-1);
-    for(int i=0; i<5; i++)
-    {
-        for(int j=0; j<5; j++)
-        {
-            printf("spMatrix[%d][%d]: ",i,j);
-            for(int k=0; k<50; k++){
-                printf(" %d",spMatrix[i][j][k]);
-            }
-            printf("\n");
-        }
-    }
+    // for(int i=0; i<5; i++)
+    // {
+    //     for(int j=0; j<5; j++)
+    //     {
+    //         printf("spMatrix[%d][%d]: ",i,j);
+    //         for(int k=0; k<50; k++){
+    //             printf(" %d",spMatrix[i][j][k]);
+    //         }
+    //         printf("\n");
+    //     }
+    // }
     printf("x: %d y:%d\n",x,y);
     for (;spMatrix[x][y][i] != -1; i++)
     {
