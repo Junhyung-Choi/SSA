@@ -5,9 +5,9 @@
 int graph[5][5] = {
     {0,0,0,0,0},
     {0,0,0,0,0},
-    {0,0,0,1,0},
-    {0,0,1,-1,0},
-    {0,0,0,1,0}
+    {0,0,0,-1,0},
+    {0,0,-1,1,0},
+    {0,0,0,-1,0}
 };
 
 int spMatrix[5][5][50];
@@ -46,7 +46,6 @@ void itoc(int index)
 
 int evalStack(int start_x, int start_y)
 {
-    printf("abc\n");
     if (spMatrix[start_x][start_y][0] == -1) return -INF;
     itoc(spMatrix[start_x][start_y][0]);
     int sx = tmpx, sy = tmpy;
@@ -62,7 +61,7 @@ int evalStack(int start_x, int start_y)
     int x,y;
     for(int i = 1; spMatrix[start_x][start_y][i] != -1; i++)
     {
-        score -= -1;
+        score -= 1;
         itoc(spMatrix[start_x][start_y][i]);
         x=tmpx;
         y=tmpy;
@@ -85,21 +84,23 @@ int evalStack_tmp()
 {
     printf("abc\n");
     if (tmp_path[0] == -1) return -INF;
+    printf("pass INF\n");
     itoc(tmp_path[0]);
     int sx = tmpx, sy = tmpy;
     int score = 0;
     initList(visited_red,0);
+    printf("pass visited_red\n");
     if (graph[sx][sy] == 1)
     {
         score += 5;
-        visited_red[tmp_path[0]] == 1;
+        visited_red[tmp_path[0]] = 1;
     } 
     else if (graph[sx][sy] == -1) score -= 5;
 
     int x,y;
     for(int i = 1; tmp_path[i] != -1; i++)
     {
-        score = -1;
+        score -= 1;
         itoc(tmp_path[i]);
         x=tmpx;
         y=tmpy;
@@ -129,7 +130,7 @@ void setPath(int x, int y, int value)
         {
             printf("spMatrix[%d][%d]: ",i,j);
             for(int k=0; k<50; k++){
-                printf(" %d",spMatrix[i][j][k]);
+                printf(" %2d",spMatrix[i][j][k]);
             }
             printf("\n");
         }
@@ -137,7 +138,7 @@ void setPath(int x, int y, int value)
     printf("x: %d y:%d\n",x,y);
     for (;spMatrix[x][y][i] != -1; i++)
     {
-        printf("spMatrix[%d][%d][%d] : %d\n",x,y,i,spMatrix[x][y][i]);
+        printf("spMatrix[%d][%d][%2d] : %d\n",x,y,i,spMatrix[x][y][i]);
         tmp_path[i] = spMatrix[x][y][i];
     }
     tmp_path[i] = value;
@@ -151,6 +152,10 @@ void setPath(int x, int y, int value)
 void copyPath(int x, int y)
 {
     int i=0;
+    for(int j=0;j<50;j++)
+    {
+        spMatrix[x][y][j] = -1;
+    }
     for (;tmp_path[i] != -1; i++)
     {
         spMatrix[x][y][i] = tmp_path[i];
@@ -170,6 +175,7 @@ int reroll(int origin)
         int near_y = origin_y + dy[i];
         if (0 <= near_x && near_x <= 4 && 0 <= near_y && near_y <= 4)
         {
+
             setPath(origin_x,origin_y,ctoi(near_x,near_y));
             if (evalStack(near_x,near_y) <= evalStack_tmp())
             {
@@ -198,7 +204,7 @@ void calSP(int start, int end)
         {
             for(int k=0; k<50; k++){
                 spMatrix[i][j][k] = -1;
-                printf("spMatrix[%d][%d][%d] : %d\n",i,j,k,spMatrix[i][j][k]);
+                printf("spMatrix[%d][%d][%2d] : %d\n",i,j,k,spMatrix[i][j][k]);
             }
         }
     }
