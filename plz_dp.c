@@ -20,6 +20,8 @@ int n_index = 1;
 int answer[50];
 int dif_x, dif_y;
 
+int isSecond = 0;
+
 int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, max_matrix = 5, search_init = 0, count_movingPoint = 0, back_row = 4, back_count = 4;
 // int S[6][6], dt[6][6];
 int dt[6][6];
@@ -84,6 +86,46 @@ int evalStack(int start_x, int start_y)
             else
             {
                   int r_index = spMatrix[index][i];
+                visited_red[r_index] = 1;
+                score += 5;
+            }
+        }
+        else if (S[x][y] == -1) score -= 5;
+    }
+    return score;
+}
+
+int evalStack_copy(int start_x, int start_y)
+{
+    int index = ctoi(start_x, start_y);
+    if (spMatrix_copy[ctoi(start_x,start_y)][0] == -1) return -INF;
+    itoc(spMatrix_copy[ctoi(start_x,start_y)][0]);
+    int sx = tmpx, sy = tmpy;
+    int score = 0;
+    initList(visited_red,0);
+    if (S[sx][sy] == 1)
+    {
+        score += 5;
+        int r_index = spMatrix_copy[index][0];
+        visited_red[r_index] = 1;
+    } 
+    else if (S[sx][sy] == -1) score -= 5;
+
+    int x,y;
+    for(int i = 1; spMatrix_copy[index][i] != -1; i++)
+    {
+        score -= 1;
+        itoc(spMatrix_copy[ctoi(start_x,start_y)][i]);
+        x=tmpx;
+        y=tmpy;
+        if(S[x][y] == 1)
+        {
+            int r_index = spMatrix_copy[index][i];
+            if (visited_red[r_index] == 1)
+                score -= 5;
+            else
+            {
+                  int r_index = spMatrix_copy[index][i];
                 visited_red[r_index] = 1;
                 score += 5;
             }
@@ -222,16 +264,30 @@ void calSP(int start_loc, int end, int choice)
     int end_y = tmpy;
     int order[20];
     if(choice == 0){
-        int order_tmp[20] = {23,18,22,13,17,21,8,12,16,20,3,7,11,15,2,6,10,1,5,0};
+        if (isSecond == 0){
+            int order_tmp[20] = {23,22,18,21,17,13,20,16,12,8,15,11,7,3,10,6,2,5,1,0};
+            for(int i=0;i<20;i++) order[i] = order_tmp[i];
+        }
+        else
+        {
+            int order_tmp[20] = {23,18,22,13,17,21,8,12,16,20,3,7,11,15,2,6,10,1,5,0};
+            for(int i=0;i<20;i++) order[i] = order_tmp[i];
+        }
         // int order_tmp[20] = {23,22,21,20,15,16,17,18,13,12,11,10,5,6,7,8,3,2,1,0};
-        for(int i=0;i<20;i++) order[i] = order_tmp[i];
     }
     else
     {
-        int order_tmp[20] = {19,14,18,9,13,17,4,8,12,16,3,7,11,15,2,6,10,1,5,0};
-        // int order_tmp[20] = {19,18,14,17,13,9,16,12,8,4,15,11,7,3,10,6,2,5,1,0};
-
-        for(int i=0;i<20;i++) order[i] = order_tmp[i];
+        if(isSecond == 0)
+        {
+            int order_tmp[20] = {19,14,18,9,13,17,4,8,12,16,3,7,11,15,2,6,10,1,5,0};
+            // int order_tmp[20] = {19,18,14,17,13,9,16,12,8,4,15,11,7,3,10,6,2,5,1,0};
+            for(int i=0;i<20;i++) order[i] = order_tmp[i];
+        }
+        else
+        {
+            int order_tmp[20] = {19,18,14,17,13,9,16,12,8,4,15,11,7,3,10,6,2,5,1,0};
+            for(int i=0;i<20;i++) order[i] = order_tmp[i];
+        }
     }
     int index = 0;
 
@@ -267,6 +323,36 @@ void calc_Shortcut(int choice) {
     else {
         for(int i = 0; i < 5; i++) S[4][i] = -1;
         calSP(19, 0,choice);
+    }
+    isSecond += 1;
+    for(int i = 0; i<25; i++)
+    {
+        for(int k = 0; k <50; k++)
+        {
+            spMatrix_copy[i][k] = spMatrix[i][k];
+        }
+    }
+    if(max_row == 4) {
+        for(int i = 0; i < 5; i++) S[i][4] = -1;
+        calSP(23, 0,choice);
+    }
+    else {
+        for(int i = 0; i < 5; i++) S[4][i] = -1;
+        calSP(19, 0,choice);
+    }
+    if (evalStack_copy(0,0) > evalStack(0,0))
+    {
+        for(int i = 0; i < 50; i++)
+        {
+            answer[i] = spMatrix_copy[0][i];
+        }
+    }
+    else
+    {
+        for(int i = 0; i < 50; i++)
+        {
+            answer[i] = spMatrix[0][i];
+        }
     }
 
 }
