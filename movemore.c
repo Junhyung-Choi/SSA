@@ -539,8 +539,8 @@ void turnLeft()
       setMotorSpeed(rm,nMotorSpeedSetting * 6/10);
       sleep(20);
    }
-
-   sleep(150);
+	//sleep(150) - 2021-12-10-14:35
+   sleep(270);
    setMotorSpeed(lm,0);
    setMotorSpeed(rm,0);
    sleep(100);
@@ -562,8 +562,8 @@ void turnRight(){
       setMotorSpeed(rm, -nMotorSpeedSetting * 6/10);
       sleep(20);
    }
-
-   sleep(50);
+	//sleep(50)
+   sleep(270);
    setMotorSpeed(lm,0);
    setMotorSpeed(rm,0);
    sleep(100);
@@ -857,11 +857,12 @@ task main(){
    finalShowMatrix();
 
    if(max_row == 3) {
-    setMotorSpeed(lm, 10);
+    	setMotorSpeed(lm, 10);
       setMotorSpeed(rm, 10);
-      sleep(500);
+      sleep(300);
       while(getColorName(c2) == White) {
-       setMotorSpeed(lm, -10);
+       	//changed direction - 12/10 15:00
+      	setMotorSpeed(lm, -10);
         setMotorSpeed(rm, 10);
         sleep(20);
       }

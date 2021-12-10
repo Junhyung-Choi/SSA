@@ -26,11 +26,11 @@ int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_r
 int dt[6][6];
 
 int S[5][5] = {
-    {0,1,0,1,0},
-    {1,0,0,0,0},
-    {0,1,0,1,0},
-    {0,0,1,-1,0},
-    {0,0,0,1,0}
+    { 0, 0, 0, 0, 0},
+    { 0, 1, 0, 0, 0},
+    { 1, 0, 0, 1, 0},
+    {-1, 0, 1,-1, 0},
+    { 0, 0, 0, 1, 0}
 };
 
 void initList_visited(int value)
@@ -194,30 +194,30 @@ void setPath(int x, int y, int value)
     int i = 0;
     // initList(tmp_path,-1);
     initList_tmpPath(-1);
-    // for(int i=0; i<5; i++)
-    // {
-    //     for(int j=0; j<5; j++)
-    //     {
-    //         printf("spMatrix[%d][%d]: ",i,j);
-    //         for(int k=0; k<50; k++){
-    //             printf(" %2d",spMatrix[ctoi(i,j)][k]);
-    //         }
-    //         printf("\n");
-    //     }
-    // }
-    // printf("\n\n");
-    // printf("x: %d y:%d\n",x,y);
+    for(int i=0; i<5; i++)
+    {
+        for(int j=0; j<5; j++)
+        {
+            printf("spMatrix[%d][%d]: ",i,j);
+            for(int k=0; k<50; k++){
+                printf(" %2d",spMatrix[ctoi(i,j)][k]);
+            }
+            printf("\n");
+        }
+    }
+    printf("\n\n");
+    printf("x: %d y:%d\n",x,y);
     for (;spMatrix[ctoi(x,y)][i] != -1; i++)
     {
-        // printf("spMatrix[%d][%d][%2d] : %d\n",x,y,i,spMatrix[ctoi(x,y)][i]);
+        printf("spMatrix[%d][%d][%2d] : %d\n",x,y,i,spMatrix[ctoi(x,y)][i]);
         tmp_path[i] = spMatrix[ctoi(x,y)][i];
     }
     tmp_path[i] = value;
-    // for (int i = 0; i < 50; i++)
-    // {
-    //     printf("%d ", tmp_path[i]);
-    // }
-    // printf("\n");
+    for (int i = 0; i < 50; i++)
+    {
+        printf("%d ", tmp_path[i]);
+    }
+    printf("\n");
 }
 
 void copyPath(int x, int y)
@@ -285,6 +285,9 @@ void calSP(int start_loc, int end, int choice)
     if(choice == 0){
         if (isSecond == 0){
             int order_tmp[20] = {23,22,18,21,17,13,20,16,12,8,15,11,7,3,10,6,2,5,1,0};
+            // int order_tmp[20] = {23,18,22,21,17,13,8,12,16,20,15,11,7,3,2,6,10,5,1,0};  
+            // int order_tmp[20] = {0,5,1,10,6,2,15,11,7,3,20,16,12,8,21,17,13,22,18,23};
+            // int order_tmp[20] = {0,1,5,2,6,15,20,3,7,11,8,12,16,20,13,17,21,18,22,23};
             for(int i=0;i<20;i++) order[i] = order_tmp[i];
         }
         else
@@ -357,6 +360,7 @@ void calc_Shortcut(int choice) {
 
     printf("%s\n", "first end");
 
+    printf("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
     if(max_row == 4) {
         calSP(23, 0, choice);
     }
@@ -365,6 +369,7 @@ void calc_Shortcut(int choice) {
     }
 
     printf("%s\n", "second end");
+
 
     if (evalStack_copy(0,0) > evalStack(0,0))
     {
@@ -396,7 +401,7 @@ int main(){
    
    //choice 0: 4x5
    //choice 1: 5x4
-   int choice = 0;
+   int choice = 1;
    if (choice == 0){
         max_row = 4;
         max_count = 4;

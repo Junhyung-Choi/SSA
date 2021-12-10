@@ -113,7 +113,7 @@ void go()
 	        	playTone(440, 20); sleep(100);
 	        	setMotorSpeed(lm, 10);
 	        	setMotorSpeed(rm, 10);
-	        	sleep(200);
+	        	sleep(400);
 	        }
 	        if(getColorName(c2) == Blue) {
         		if(row % 2 == 0) S[row][count] = -1;
@@ -144,7 +144,7 @@ void go()
          	playTone(440, 20); sleep(100);
          	setMotorSpeed(lm, 10);
          	setMotorSpeed(rm, 10);
-         	sleep(200);
+         	sleep(400);
             }
            else if(getColorName(c2) == Blue) {
         		if(row % 2 == 0) S[row][count] = -1;
@@ -251,7 +251,7 @@ void completeSearch() {
                   playTone(440, 20);
                   setMotorSpeed(lm, 10);
 	        				setMotorSpeed(rm, 10);
-	        				sleep(200);
+	        				sleep(400);
                }
                else sleep(90);
             }
@@ -265,7 +265,7 @@ void completeSearch() {
                   playTone(440, 20);
                   setMotorSpeed(lm, 10);
 	        				setMotorSpeed(rm, 10);
-	        				sleep(200);
+	        				sleep(400);
                }
                else sleep(90);
             }
