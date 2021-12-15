@@ -16,7 +16,7 @@
 #define INF 123456789
 #define SIZE 20
 
-int nMotorSpeedSetting=25, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, max_matrix = 5, search_init = 0, count_movingPoint = 0, back_row = 4, back_count = 4;
+int nMotorSpeedSetting=20, vertex=0, count =0, row=0, val, r, c, c_suc=15, max_row = 4, max_count = 5, max_matrix = 5, search_init = 0, count_movingPoint = 0, back_row = 4, back_count = 4;
 int S[6][6], dt[6][6];
 int choice = 0, isSecond = 0, final_score;
 int before_count = -1;
@@ -111,96 +111,98 @@ void go()
         setMotorSpeed(rm, nMotorSpeedSetting + val);
     }
     else {
-        setMotorSpeed(lm, nMotorSpeedSetting + val);
-        setMotorSpeed(rm, nMotorSpeedSetting - val);
+        setMotorSpeed(lm, nMotorSpeedSetting + (val * 1.5));
+        setMotorSpeed(rm, nMotorSpeedSetting - (val * 1.5));
     }
 
     if(row % 2 == 1 || row == max_row){
         if(getColorName(c1) == Yellow || getColorName(c3) == Yellow) {
-            setMotorSpeed(lm, 10);
-            setMotorSpeed(rm, 10);
-            sleep(300);
+            if (before_count == -1)
+            {
+                before_count = count;
+            }
+            setMotorSpeed(lm, 12);
+            setMotorSpeed(rm, 5);
+            sleep(250);
 
             if(getColorName(c2) == Red) {
                 if(count == max_count) S[row][0] = 1;
-                if(row % 2 == 0) S[row][count] = 1;
-                else S[row][(max_count - 1) - count] = 1;
+                if(row % 2 == 0) S[row][before_count] = 1;
+                else S[row][(max_count - 1) - before_count] = 1;
                 showMatrix();
                 playTone(440, 20); sleep(100);
                 setMotorSpeed(lm, 10);
-                setMotorSpeed(rm, 10);
+                setMotorSpeed(rm, 13);
                 sleep(200);
                 playTone(700, 20); sleep(100);
             }
             else if(getColorName(c2) == Blue) {
-                if(row % 2 == 0) S[row][count] = -1;
+                if(row % 2 == 0) S[row][before_count] = -1;
                 else S[row][(max_count - 1) - count] = -1;
                 showMatrix();
                 playTone(440, 20); sleep(100);
                 setMotorSpeed(lm, 10);
-                setMotorSpeed(rm, 10);
+                setMotorSpeed(rm, 13);
                 sleep(200);
+            }
+            else {
+                setMotorSpeed(lm, 10);
+                setMotorSpeed(rm, 13);
+                sleep(500);
             }
             vertex++;
         }
         else
         {
+            before_count = -1;
             vertex = 0;
             showMatrix();
         }
     }
     else{
         if(getColorName(c3) == Yellow || getColorName(c1) == Yellow){
-            setMotorSpeed(lm, 10);
-            setMotorSpeed(rm, 10);
-            sleep(300);
+            if (before_count == -1)
+            {
+                before_count = count;
+            }
+            setMotorSpeed(lm, 12);
+            setMotorSpeed(rm, 5);
+            sleep(250);
+
             if(getColorName(c2) == Red){
-                if(row % 2 == 0) S[row][count] = 1;
-                else S[row][(max_count - 1) - count] = 1;
+                if(row % 2 == 0) S[row][before_count] = 1;
+                else S[row][(max_count - 1) - before_count] = 1;
                 showMatrix();
                 playTone(440, 20); sleep(100);
                 setMotorSpeed(lm, 10);
-                setMotorSpeed(rm, 10);
-                sleep(200);
+                setMotorSpeed(rm, 13);
+                sleep(400);
                 playTone(700, 20); sleep(100);
             }
             else if(getColorName(c2) == Blue) {
-                if(row % 2 == 0) S[row][count] = -1;
-                else S[row][(max_count - 1) - count] = -1;
+                if(row % 2 == 0) S[row][before_count] = -1;
+                else S[row][(max_count - 1) - before_count] = -1;
                 showMatrix();
                 playTone(440, 20); sleep(100);
                 setMotorSpeed(lm, 10);
-                setMotorSpeed(rm, 10);
-                sleep(200);
+                setMotorSpeed(rm, 13);
+                sleep(400);
+            }
+            else
+            {
+                setMotorSpeed(lm, 10);
+                setMotorSpeed(rm, 13);
+                sleep(500);
             }
             vertex++;
         }
         else{
+            before_count = -1;
             vertex = 0;
             showMatrix();
         }
     }
     if(vertex == 1) count++;
-}
-
-void turnLeft_2()
-{
-   while(getColorName(c1) > Yellow){
-      setMotorSpeed(lm, -nMotorSpeedSetting * 6/10);
-      setMotorSpeed(rm, nMotorSpeedSetting * 6/10);
-      sleep(20);
-   }
-
-   while(getColorName(c2) > Yellow){
-      setMotorSpeed(lm,-nMotorSpeedSetting * 6/10);
-      setMotorSpeed(rm,nMotorSpeedSetting * 6/10);
-      sleep(20);
-   }
-
-   sleep(150);
-   setMotorSpeed(lm,0);
-   setMotorSpeed(rm,0);
-   sleep(100);
 }
 
 void turnLeft()
@@ -222,6 +224,26 @@ void turnLeft()
    }
 
    sleep(150);
+   setMotorSpeed(lm,0);
+   setMotorSpeed(rm,0);
+   sleep(100);
+}
+
+void turnLeft_2()
+{
+	while(getColorName(c1) > Yellow){
+      setMotorSpeed(lm, -nMotorSpeedSetting * 6/10);
+      setMotorSpeed(rm, nMotorSpeedSetting * 6/10);
+      sleep(20);
+   }
+
+   while(getColorName(c2) > Yellow){
+      setMotorSpeed(lm,-nMotorSpeedSetting * 6/10);
+      setMotorSpeed(rm,nMotorSpeedSetting * 6/10);
+      sleep(20);
+   }
+
+   sleep(50);
    setMotorSpeed(lm,0);
    setMotorSpeed(rm,0);
    sleep(100);
@@ -250,7 +272,7 @@ void turnRight_2(){
 void turnRight(){
    setMotorSpeed(lm,40);
    setMotorSpeed(rm,40);
-   sleep(150);
+   sleep(100);
 
    while(getColorName(c3) > Yellow){
       setMotorSpeed(lm, nMotorSpeedSetting * 6/10);
@@ -272,7 +294,7 @@ void turnRight(){
 
 void go_2()
 {
-   val = 5;
+   val = 8;
    if(getColorName(c2) == Yellow)
    {
       setMotorSpeed(lm, nMotorSpeedSetting - val);
@@ -314,13 +336,13 @@ void go_2()
 }
 
 void completeSearch() {
-   while(true) {
-      go();
+    while(true) {
+        go();
 
-      if(search_init == 0 && count == 4 && row == 0) {
-            setMotorSpeed(lm, 20);
-            setMotorSpeed(rm, 15);
-            sleep(300);
+        if(search_init == 0 && count == 4 && row == 0) {
+            setMotorSpeed(lm, 13);
+            setMotorSpeed(rm, 10);
+            sleep(200);
             stopMotor();
             sleep(200);
             if(getColorName(c2) == White) {
@@ -340,86 +362,98 @@ void completeSearch() {
                choice = 1;
             }
             search_init++;
-         }
+        }
 
-      if(count == max_count) {
-         if(row == max_row) return;
-         if(row % 2 == 0) {
-            setMotorSpeed(lm, 40);
-            setMotorSpeed(rm, 35);
-            sleep(300);
-            for(int i = 0; i < 4; i++) {
-               if(getColorName(c2) == Red) {
-                  if(row % 2 == 0) S[row][count-1] = 1;
-                  else S[row][max_count - count] = 1;
-                  playTone(440, 20);
-                  setMotorSpeed(lm, 10);
-                       setMotorSpeed(rm, 10);
-                       sleep(200);
-               }
-               if(getColorName(c2) == Blue) {
-                  if(row % 2 == 0) S[row][count-1] = -1;
-                  else S[row][max_count - count] = -1;
-                  playTone(440, 20);
-                  setMotorSpeed(lm, 10);
-                    setMotorSpeed(rm, 10);
-                    sleep(200);
-               }
-            }
+        if(count == max_count) {
+            if(row == max_row) return;
+            if(row % 2 == 0) {
+                setMotorSpeed(lm, 40);
+                setMotorSpeed(rm, 35);
+                sleep(100);  //300
+                for(int i = 0; i < 4; i++) {
+                    if(getColorName(c2) == Red) {
+                        if(row % 2 == 0) S[row][count-1] = 1;
+                        else S[row][max_count - count] = 1;
+                        playTone(440, 20);
+                        setMotorSpeed(lm, 10);
+                        setMotorSpeed(rm, 10);
+                        sleep(200);
+                        break;
+                    }
+                    else if(getColorName(c2) == Blue) {
+                        if(row % 2 == 0) S[row][count-1] = -1;
+                        else S[row][max_count - count] = -1;
+                        playTone(440, 20);
+                        setMotorSpeed(lm, 10);
+                        setMotorSpeed(rm, 10);
+                        sleep(200);
+                        break;
+                    }
+                    else
+                    {
+                        sleep(50);
+                    }
+                }
             turnRight();
-         }
-         else {
-             setMotorSpeed(lm, 40);
-            setMotorSpeed(rm, 35);
-            sleep(300);
-            for(int i = 0; i < 3; i++) {
-               if(getColorName(c2) == Red) {
-                  if(row % 2 == 0) S[row][count-1] = 1;
-                  else S[row][max_count - count] = 1;
-                  playTone(440, 20);
-                  setMotorSpeed(lm, 10);
-                       setMotorSpeed(rm, 10);
-                       sleep(200);
-               }
-               if(getColorName(c2) == Blue) {
-                  if(row % 2 == 0) S[row][count-1] = -1;
-                  else S[row][max_count - count] = -1;
-                  playTone(440, 20);
-                  setMotorSpeed(lm, 10);
-                       setMotorSpeed(rm, 10);
-                       sleep(200);
-               }
             }
-            turnLeft();
-         }
-         if(row % 2 == 0) {
-            while(getColorName(c3) == White) go_2();
-            setMotorSpeed(lm, 35);
-            setMotorSpeed(rm, 30);
-            sleep(400);
-            turnRight();
-         }
-         else {
-            while(getColorName(c1) == White) go_2();
-            setMotorSpeed(lm, 30);
-            setMotorSpeed(rm, 35);
-            sleep(400);
-            turnLeft();
-         }
-         row++;
-         count = 0;
-         while(getColorName(c1) == White && getColorName(c3) == White) {
-            setMotorSpeed(lm, -10);
-            setMotorSpeed(rm, -10);
-         }
-         setMotorSpeed(lm,-10);
-         setMotorSpeed(rm,-10);
-         sleep(700);
+            else {
+                setMotorSpeed(lm, 40);
+                setMotorSpeed(rm, 35);
+                sleep(100); //300
+                for(int i = 0; i < 3; i++) {
+                    if(getColorName(c2) == Red) {
+                        if(row % 2 == 0) S[row][count-1] = 1;
+                        else S[row][max_count - count] = 1;
+                        playTone(440, 20);
+                        setMotorSpeed(lm, 10);
+                        setMotorSpeed(rm, 10);
+                        sleep(200);
+                        break;
+                    }
+                    else if(getColorName(c2) == Blue) {
+                        if(row % 2 == 0) S[row][count-1] = -1;
+                        else S[row][max_count - count] = -1;
+                        playTone(440, 20);
+                        setMotorSpeed(lm, 10);
+                        setMotorSpeed(rm, 10);
+                        sleep(200);
+                        break;
+                    }
+                    else
+                    {
+                        sleep(50);
+                    }
+                }
+                turnLeft();
+            }
+            if(row % 2 == 0) {
+                while(getColorName(c3) == White) go_2();
+                setMotorSpeed(lm, 35);
+                setMotorSpeed(rm, 30);
+                sleep(500);
+                turnRight();
+            }
+            else {
+                while(getColorName(c1) == White) go_2();
+                setMotorSpeed(lm, 30);
+                setMotorSpeed(rm, 35);
+                sleep(450);
+                turnLeft();
+            }
+            row++;
+            count = 0;
+            while(getColorName(c1) == White && getColorName(c3) == White) {
+                setMotorSpeed(lm, -10);
+                setMotorSpeed(rm, -10);
+            }
+            setMotorSpeed(lm,-10);
+            setMotorSpeed(rm,-10);
+            sleep(700);
 
-         stopMotor();
-         sleep(700);
-      }
-   }
+            stopMotor();
+            sleep(700);
+        }
+    }
 }
 
 int max(int a, int b) {
