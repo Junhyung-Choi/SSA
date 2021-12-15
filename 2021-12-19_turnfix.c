@@ -686,7 +686,7 @@ void completeSearch() {
          if(row % 2 == 0) {
             setMotorSpeed(lm, 40);
             setMotorSpeed(rm, 35);
-            sleep(300);
+            sleep(250);
             for(int i = 0; i < 4; i++) {
                if(getColorName(c2) == Red) {
                   if(row % 2 == 0) S[row][count-1] = 1;
@@ -710,7 +710,7 @@ void completeSearch() {
          else {
              setMotorSpeed(lm, 40);
             setMotorSpeed(rm, 35);
-            sleep(300);
+            sleep(250);
             for(int i = 0; i < 3; i++) {
                if(getColorName(c2) == Red) {
                   if(row % 2 == 0) S[row][count-1] = 1;
